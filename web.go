@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 //	"fmt"
+	"io/ioutil"
 )
 
 
@@ -62,7 +63,22 @@ func init() {
 			if rand.Intn(100) <= responseChance || strings.HasPrefix(text, botUsername) || strings.Contains(text,"Dingus") {
 				var response whr
 				response.Username = botUsername
+
 				response.Text = markovChain.Generate(numWords)
+				if strings.HasPrefix(text,"Dingus: compliment me"){
+					url := "http://127.0.0.1:56735"
+					comp, err := http.Get(url)
+					if err != nil {
+						log.Fatal(err)
+					}
+					defer comp.Body.Close()
+					compData, err := ioutil.ReadAll(comp.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					compString := string(compData)
+					response.Text = rUsername + ": " + compString
+				}
 				log.Printf("Sending response: %s", response.Text)
 
 				b, err := json.Marshal(response)
