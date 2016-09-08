@@ -79,6 +79,22 @@ func init() {
 					compString := string(compData)
 					response.Text = rUsername + ": " + compString
 				}
+
+				if strings.HasPrefix(text, "Dingus: insult me"){
+					url := "http://insult-me-dingus.herokuapp.com/"
+					comp, err := http.Get(url)
+					if err != nil {
+						log.Fatal(err)
+					}
+					defer comp.Body.Close()
+					compData, err := ioutil.ReadAll(comp.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					compString := string(compData)
+					response.Text = rUsername + ": " + compString
+				}
+
 				log.Printf("Sending response: %s", response.Text)
 
 				b, err := json.Marshal(response)
